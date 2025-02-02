@@ -1,24 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { getTestTypes } from "./redux/actions/testTypeActions";
+import { ToastContainer } from "react-bootstrap";
+import { Route, Routes } from "react-router-dom";
+import TestTypesPage from "./components/pages/admin/testTypePage";
+import Navigation from "./components/components/navigation";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getTestTypes());
+  }, [dispatch]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      <Navigation />
+      <div className="content">
+        <Routes>
+          <Route path="/" element={<TestTypesPage />} />{" "}
+          <Route path="admin/testType" element={<TestTypesPage />} />{" "}
+        </Routes>
+      </div>
+    </>
   );
 }
 
