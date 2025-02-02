@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// Базова URL для запитів
 const BASE_URL = "http://localhost:3000/test-types";
 
 // Налаштування інстансу Axios
@@ -9,6 +10,20 @@ const axiosInstance = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+// Додаємо токен до заголовків кожного запиту
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token"); // Отримуємо токен з localStorage
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`; // Додаємо токен до заголовків
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 // Отримання всіх типів тестів
 export const fetchTestTypes = async () => {

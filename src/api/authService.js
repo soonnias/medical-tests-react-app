@@ -1,0 +1,37 @@
+import axios from "axios";
+
+const API_URL = "http://localhost:3000/auth/";
+
+export const AuthService = {
+  register: async (userData) => {
+    try {
+      const response = await axios.post(API_URL + "register", userData);
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+      }
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: "Something went wrong" };
+    }
+  },
+
+  login: async (credentials) => {
+    try {
+      const response = await axios.post(API_URL + "login", credentials);
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+      }
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: "Something went wrong" };
+    }
+  },
+
+  logout: () => {
+    localStorage.removeItem("token");
+  },
+
+  getCurrentToken: () => {
+    return localStorage.getItem("token");
+  },
+};

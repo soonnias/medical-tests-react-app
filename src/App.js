@@ -6,6 +6,8 @@ import { getTestTypes } from "./redux/actions/testTypeActions";
 import { ToastContainer } from "react-bootstrap";
 import { Route, Routes } from "react-router-dom";
 import TestTypesPage from "./components/pages/admin/testTypePage";
+import Login from "./components/components/login.jsx";
+import Register from "./components/components/register.jsx";
 import Navigation from "./components/components/navigation";
 
 function App() {
@@ -33,6 +35,8 @@ function App() {
         <Routes>
           <Route path="/" element={<TestTypesPage />} />{" "}
           <Route path="admin/testType" element={<TestTypesPage />} />{" "}
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </div>
     </>

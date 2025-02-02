@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Table, Form, Modal, Spinner } from "react-bootstrap";
+import { Button, Table, Form, Modal, Spinner, Alert } from "react-bootstrap";
 import {
   createTestTypeAction,
   deleteTestTypeAction,
@@ -42,6 +42,11 @@ const TestTypesPage = () => {
     setCurrentTestType({ name: "" });
   };
 
+  const handleErrorClose = () => {
+    // Дія для очищення помилки в Redux
+    dispatch({ type: "CLEAR_ERROR" });
+  };
+
   const filteredTestTypes = !loading
     ? testTypes
         .filter(
@@ -56,7 +61,11 @@ const TestTypesPage = () => {
   return (
     <div className="container mt-4">
       <h2>Типи тестів</h2>
-      {error && <p className="text-danger">{error}</p>}
+      {error && (
+        <Alert variant="danger" onClose={handleErrorClose} dismissible>
+          {error}
+        </Alert>
+      )}
 
       <div className="d-flex justify-content-between mb-3">
         <Form.Control
