@@ -9,6 +9,7 @@ import TestTypesPage from "./components/pages/admin/testTypePage";
 import Login from "./components/components/login.jsx";
 import Register from "./components/components/register.jsx";
 import Navigation from "./components/components/navigation";
+import PatientsPage from "./components/pages/admin/patientsPage.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -37,6 +38,7 @@ function App() {
           <Route path="admin/testType" element={<TestTypesPage />} />{" "}
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="admin/patients" element={<PatientsPage />} />
         </Routes>
       </div>
     </>
