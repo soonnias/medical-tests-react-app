@@ -7,8 +7,8 @@ import {
 
 const initialState = {
   patients: [],
-  patient: null, // Один пацієнт для пошуку за ID
-  filteredPatients: [], // Пацієнти, знайдені за номером телефону
+  patient: null,
+  filteredPatients: [],
   error: null,
 };
 
