@@ -8,9 +8,11 @@ import {
   getPatientsByNumberAction,
 } from "../../../redux/actions/patientActions";
 import ReactInputMask from "react-input-mask";
+import { useNavigate } from "react-router-dom";
 
 const PatientsPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { patients, error } = useSelector((state) => state.patients);
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -154,7 +156,7 @@ const PatientsPage = () => {
 
     try {
       await dispatch(createPatientAction(currentPatient));
-      if (errors.submit == "") {
+      if (errors.submit === "") {
         setShowModal(false);
         dispatch(getAllPatients());
         setCurrentPatient({
@@ -208,6 +210,10 @@ const PatientsPage = () => {
     });
   };
 
+  const handleNavigate = (id) => {
+    navigate(`/patientDetail/${id}`);
+  };
+
   return (
     <div className="container mt-4">
       <h2>Пацієнти</h2>
@@ -252,7 +258,12 @@ const PatientsPage = () => {
                       <strong>Телефон:</strong> {patient.phoneNumber} <br />
                       <strong>Email:</strong> {patient.email} <br />
                       <strong>Роль:</strong> {patient.role} <br />
-                      <Button className="mt-2">Детальніше</Button>
+                      <Button
+                        className="mt-2"
+                        onClick={() => handleNavigate(patient._id)}
+                      >
+                        Детальніше
+                      </Button>
                     </Card.Text>
                   </Card.Body>
                 </Card>

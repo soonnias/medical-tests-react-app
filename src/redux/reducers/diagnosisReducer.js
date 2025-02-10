@@ -22,7 +22,8 @@ const diagnosisReducer = (state = initialState, action) => {
     case CREATE_DIAGNOSIS:
       return {
         ...state,
-        diagnosis: [...state.diagnosis, action.payload], // Додаємо новий діагноз
+        diagnosis: [...state.diagnosis, action.payload],
+        diagnosis_by_patient: [...state.diagnosis_by_patient, action.payload],
         error: null,
       };
 
@@ -36,6 +37,11 @@ const diagnosisReducer = (state = initialState, action) => {
       return {
         ...state,
         diagnosis: state.diagnosis.map((diag) =>
+          diag._id === action.payload._id
+            ? { ...diag, description: action.payload.description }
+            : diag
+        ),
+        diagnosis_by_patient: state.diagnosis_by_patient.map((diag) =>
           diag._id === action.payload._id
             ? { ...diag, description: action.payload.description }
             : diag

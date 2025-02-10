@@ -61,10 +61,9 @@ export const getAllDiagnosisByPatient = async (patientId) => {
 // Оновлення опису діагнозу
 export const updateDescriptionDiagnosis = async (id, description) => {
   try {
-    const response = await axiosInstance.patch(
-      `/${id}/desciption`,
-      description
-    );
+    const response = await axiosInstance.patch(`/${id}/description`, {
+      description,
+    });
     return response.data;
   } catch (error) {
     throw new Error(

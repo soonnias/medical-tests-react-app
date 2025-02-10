@@ -59,15 +59,22 @@ export const createNewMedicalTest = (testData) => async (dispatch) => {
 };
 
 // Оновлення медичного тесту
-export const updateMedicalTestAction =
-  (id, updateData, file) => async (dispatch) => {
-    try {
-      const data = await updateMedicalTest(id, updateData, file);
-      dispatch({ type: UPDATE_MEDICAL_TEST, payload: data });
-    } catch (error) {
-      dispatch({ type: MEDICAL_TEST_ERROR, payload: error.message });
-    }
-  };
+export const updateMedicalTestAction = (id, updateData) => async (dispatch) => {
+  try {
+    /*console.log("action updateData:", updateData);
+    console.log("action updateData entries:");
+    for (let pair of updateData.entries()) {
+      console.log(pair[0], pair[1]);
+    }*/
+
+    // Якщо є файл, передаємо як FormData
+    const data = await updateMedicalTest(id, updateData);
+
+    dispatch({ type: UPDATE_MEDICAL_TEST, payload: data });
+  } catch (error) {
+    dispatch({ type: MEDICAL_TEST_ERROR, payload: error.message });
+  }
+};
 
 // Видалення медичного тесту
 export const deleteMedicalTestAction = (id) => async (dispatch) => {

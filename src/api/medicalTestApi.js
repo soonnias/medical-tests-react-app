@@ -68,38 +68,27 @@ export const createMedicalTest = async (testData) => {
   }
 };
 
-// Оновлення медичного тесту
-export const updateMedicalTest = async (id, updateData, file = null) => {
+export const updateMedicalTest = async (id, updateData) => {
   try {
-    let formData;
+    // Лог перед відправкою
+    /*console.log("FormData перед відправкою:", updateData);
+    for (let pair of updateData.entries()) {
+      console.log(pair[0], pair[1]);
+    }*/
 
-    if (file) {
-      formData = new FormData();
-      // Додаємо файл, якщо він є
-      formData.append("file", file);
-      // Додаємо інші дані
-      Object.keys(updateData).forEach((key) => {
-        if (updateData[key] !== undefined) {
-          formData.append(key, updateData[key]);
-        }
-      });
-    }
-
-    const config = {
+    // Відправляємо `updateData` напряму
+    const response = await axiosInstance.patch(`/${id}`, updateData, {
       headers: {
-        "Content-Type": file ? "multipart/form-data" : "application/json",
+        "Content-Type": "multipart/form-data",
       },
-    };
+    });
 
-    const response = await axiosInstance.patch(
-      `/${id}`,
-      file ? formData : updateData,
-      config
-    );
+    console.log("Відповідь сервера:", response.data);
     return response.data;
   } catch (error) {
+    console.error("Помилка оновлення тесту:", error);
     throw new Error(
-      error.response?.data?.message || "Error updating medical test"
+      error.response?.data?.message || "Помилка оновлення медичного тесту"
     );
   }
 };
@@ -116,15 +105,19 @@ export const deleteMedicalTest = async (id) => {
   }
 };
 
-// Завантаження файлу результату тесту
 export const downloadTestFile = async (id) => {
   try {
     const response = await axiosInstance.get(`/${id}/download`, {
       responseType: "blob",
     });
 
+    // Отримуємо MIME-тип
+    const mimeType = response.headers["content-type"];
+
     // Створюємо URL для завантаження
-    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const url = window.URL.createObjectURL(
+      new Blob([response.data], { type: mimeType })
+    );
 
     // Створюємо тимчасове посилання для завантаження
     const link = document.createElement("a");
@@ -135,7 +128,9 @@ export const downloadTestFile = async (id) => {
     let fileName = "download";
     if (contentDisposition) {
       const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
-      if (fileNameMatch.length === 2) fileName = fileNameMatch[1];
+      if (fileNameMatch.length === 2) {
+        fileName = decodeURIComponent(escape(fileNameMatch[1])); // Фікс кодування
+      }
     }
 
     link.setAttribute("download", fileName);
