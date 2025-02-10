@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { getTestTypes } from "../../../redux/actions/testTypeActions";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form, Col, Card, Row } from "react-bootstrap";
 import {
   createNewMedicalTest,
   downloadMedicalTestFile,
@@ -114,26 +114,34 @@ function MedicalTestsBlock({ patientId, role }) {
       {patientTests.length === 0 ? (
         <p>Немає тестів для цього пацієнта.</p>
       ) : (
-        <table className="table table-bordered">
-          <thead>
-            <tr>
-              <th>Дата тесту</th>
-              <th>Тип тесту</th>
-              <th>Статус</th>
-              <th>Результат</th>
-              {role === "admin" && <th>Дії</th>}
-              <th>Pdf</th>
-            </tr>
-          </thead>
-          <tbody>
-            {patientTests.map((test) => (
-              <tr key={test._id}>
-                <td>{new Date(test.testDate).toLocaleDateString()}</td>
-                <td>{test.testTypeId?.name}</td>
-                <td>{test.status}</td>
-                <td>{test.result}</td>
-                {role === "admin" && (
-                  <td>
+        <Row xs={1} md={2} lg={3} className="g-4">
+          {patientTests.map((test) => (
+            <Col key={test._id}>
+              <Card className="h-100 shadow-sm">
+                <Card.Body>
+                  <Card.Title>{test.testTypeId?.name}</Card.Title>
+                  <Card.Subtitle className="mb-2 text-muted">
+                    {new Date(test.testDate).toLocaleDateString()}
+                  </Card.Subtitle>
+                  <Card.Text>
+                    <strong>Статус:</strong> {test.status}
+                  </Card.Text>
+                  <Card.Text>
+                    <strong>Результат:</strong> {test.result}
+                  </Card.Text>
+                  <Card.Text>
+                    <strong>Рекомендації:</strong>{" "}
+                    {test.recommendations || "Немає"}
+                  </Card.Text>
+                  {role === "admin" && (
+                    <Card.Text>
+                      <strong>Пацієнт:</strong> {test.userId.firstName}{" "}
+                      {test.userId.lastName}
+                    </Card.Text>
+                  )}
+                </Card.Body>
+                <Card.Footer className="d-flex justify-content-between">
+                  {role === "admin" && (
                     <Button
                       variant="primary"
                       size="sm"
@@ -145,35 +153,32 @@ function MedicalTestsBlock({ patientId, role }) {
                           filePath: test.filePath || "",
                         });
                         setSelectedTestId(test._id);
-                        setIsEditing(true);
                         setShowModal(true);
+                        setIsEditing(true);
                       }}
                     >
                       Редагувати
                     </Button>
-                  </td>
-                )}
-                <td>
+                  )}
                   {test.filePath ? (
                     <Button
-                      variant="primary"
+                      variant="success"
                       size="sm"
                       onClick={() =>
                         dispatch(downloadMedicalTestFile(test._id))
                       }
                     >
-                      Завантажити
+                      Завантажити PDF
                     </Button>
                   ) : (
-                    <span>Немає файлу</span>
+                    <span className="text-muted">Немає файлу</span>
                   )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </Card.Footer>
+              </Card>
+            </Col>
+          ))}
+        </Row>
       )}
-
       {/* Modal для створення/редагування */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>

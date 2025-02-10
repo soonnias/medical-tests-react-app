@@ -10,6 +10,7 @@ import PatientsPage from "./components/pages/admin/patientsPage.jsx";
 import UserDetailsPage from "./components/pages/userDetails/userDetailsPage.jsx";
 import DiagnosisBlock from "./components/pages/userDetails/diagnosisBlock.jsx";
 import DiagnosisPage from "./components/pages/admin/diagnosisPage.jsx";
+import MedicalTestsPage from "./components/pages/admin/medicalTestsPage.jsx";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path="/patients" element={<PatientsPage />} />
           <Route path="patientDetail/:id" element={<UserDetailsPage />} />
           <Route path="/diagnoses" element={<DiagnosisPage />} />
+          <Route path="/tests" element={<MedicalTestsPage />} />
         </Routes>
       </div>
     </>
