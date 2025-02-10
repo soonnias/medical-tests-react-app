@@ -8,6 +8,8 @@ import Register from "./components/components/register.jsx";
 import Navigation from "./components/components/navigation";
 import PatientsPage from "./components/pages/admin/patientsPage.jsx";
 import UserDetailsPage from "./components/pages/userDetails/userDetailsPage.jsx";
+import DiagnosisBlock from "./components/pages/userDetails/diagnosisBlock.jsx";
+import DiagnosisPage from "./components/pages/admin/diagnosisPage.jsx";
 
 function App() {
   return (
@@ -32,6 +34,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/patients" element={<PatientsPage />} />
           <Route path="patientDetail/:id" element={<UserDetailsPage />} />
+          <Route path="/diagnoses" element={<DiagnosisPage />} />
         </Routes>
       </div>
     </>
