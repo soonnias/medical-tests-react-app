@@ -11,10 +11,12 @@ import UserDetailsPage from "./components/pages/userDetails/userDetailsPage.jsx"
 import DiagnosisBlock from "./components/pages/userDetails/diagnosisBlock.jsx";
 import DiagnosisPage from "./components/pages/admin/diagnosisPage.jsx";
 import MedicalTestsPage from "./components/pages/admin/medicalTestsPage.jsx";
+import { AuthProvider } from "./contexts/AuthContext.js";
+import PrivateRoute from "./contexts/PrivateRoute.js";
 
 function App() {
   return (
-    <>
+    <AuthProvider>
       <ToastContainer
         position="top-right"
         autoClose={2000}
@@ -29,17 +31,56 @@ function App() {
       <Navigation />
       <div className="content">
         <Routes>
-          <Route path="/login" element={<Login />} />{" "}
-          <Route path="/test-types" element={<TestTypesPage />} />{" "}
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/patients" element={<PatientsPage />} />
-          <Route path="patientDetail/:id" element={<UserDetailsPage />} />
-          <Route path="/diagnoses" element={<DiagnosisPage />} />
-          <Route path="/tests" element={<MedicalTestsPage />} />
+
+          {/* Тільки для адміна */}
+          <Route
+            path="/test-types"
+            element={
+              <PrivateRoute role="admin">
+                <TestTypesPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/patients"
+            element={
+              <PrivateRoute role="admin">
+                <PatientsPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="patientDetail/:id"
+            element={
+              <PrivateRoute role="admin">
+                <UserDetailsPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/diagnoses"
+            element={
+              <PrivateRoute role="admin">
+                <DiagnosisPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/medical-tests/:testTypeId?"
+            element={
+              <PrivateRoute role="admin">
+                <MedicalTestsPage />
+              </PrivateRoute>
+            }
+          />
+
+          {/* Для користувача */}
+          <Route path="info/:id" element={<UserDetailsPage role="user" />} />
         </Routes>
       </div>
-    </>
+    </AuthProvider>
   );
 }
 

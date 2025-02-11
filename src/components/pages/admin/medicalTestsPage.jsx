@@ -15,7 +15,7 @@ import {
   Modal,
   Row,
 } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 function MedicalTestsPage() {
   const dispatch = useDispatch();
@@ -36,10 +36,27 @@ function MedicalTestsPage() {
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const { testTypeId } = useParams();
+  const [selectedTestType, setSelectedTestType] = useState(testTypeId || "");
+
   useEffect(() => {
     dispatch(getAllMedicalTests());
     dispatch(getTestTypes());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (testTypeId) {
+      const existsInTestTypes = testTypes.some(
+        (type) => type._id === testTypeId
+      );
+
+      if (existsInTestTypes) {
+        setSelectedTestType(testTypeId);
+      } else {
+        setSelectedTestType("");
+      }
+    }
+  }, [testTypeId, testTypes]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -77,7 +94,6 @@ function MedicalTestsPage() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
-  const [selectedTestType, setSelectedTestType] = useState("");
   const [dateRange, setDateRange] = useState({ from: "", to: "" });
 
   const filteredTests = tests.filter((test) => {
@@ -87,9 +103,11 @@ function MedicalTestsPage() {
     const matchesStatus = selectedStatus
       ? test.status === selectedStatus
       : true;
+
     const matchesTestType = selectedTestType
       ? test.testTypeId?._id === selectedTestType
       : true;
+
     const matchesDate =
       (!dateRange.from ||
         new Date(test.testDate) >= new Date(dateRange.from)) &&

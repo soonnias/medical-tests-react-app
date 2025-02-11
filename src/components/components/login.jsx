@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthService } from "../../api/authService";
 import ReactInputMask from "react-input-mask";
 import { useAuth } from "../../contexts/AuthContext";
+import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, getUser } = useAuth();
   const [formData, setFormData] = useState({
     phoneNumber: "",
     password: "",
@@ -34,7 +35,6 @@ const Login = () => {
     setError("");
     setLoading(true);
 
-    // Перевіряємо валідність номера телефону тільки при відправці форми
     const numbersOnly = formData.phoneNumber.replace(/\D/g, "");
     const isValid = numbersOnly.startsWith("380") && numbersOnly.length === 12;
 
@@ -46,14 +46,48 @@ const Login = () => {
 
     try {
       const response = await AuthService.login(formData);
-      login(response.token);
-      navigate("/admin/testType");
-    } catch (err) {
-      setError(err.message || "Невірний логін або пароль");
-    } finally {
-      setLoading(false);
+      //login(response.token); // Використовуємо login з контексту
+
+      //const user = getUser();
+
+      const user = await AuthService.getCurrentUser();
+
+      const userRole = user?.role;
+      const userId = user?._id;
+
+      console.log("INFO LOGIN", userRole, userId);
+
+      if (userRole === "user" && userId) {
+        localStorage.setItem("id", userId);
+        navigate(`/info/${userId}`);
+      } else {
+        navigate("/patients");
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
+
+  useEffect(() => {
+    const navigateTo = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        if (token) {
+          const id = localStorage.getItem("id");
+          if (id) {
+            navigate(`/info/${id}`);
+          } else {
+            navigate("/patients");
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    navigateTo();
+  }, []);
 
   return (
     <div className="container mt-5">

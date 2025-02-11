@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthService } from "../../api/authService";
 import ReactInputMask from "react-input-mask";
@@ -21,6 +21,27 @@ const Register = () => {
     phoneNumber: "",
   });
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const navigateTo = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        if (token) {
+          const id = localStorage.getItem("id");
+          if (id) {
+            navigate(`/info/${id}`);
+          } else {
+            navigate("/patients");
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    navigateTo();
+  }, []);
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

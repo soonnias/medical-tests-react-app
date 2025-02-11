@@ -7,6 +7,7 @@ import {
   getTestTypes,
   updateTestTypeAction,
 } from "../../../redux/actions/testTypeActions";
+import { useNavigate } from "react-router-dom";
 
 const TestTypesPage = () => {
   const dispatch = useDispatch();
@@ -16,6 +17,8 @@ const TestTypesPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [currentTestType, setCurrentTestType] = useState({ name: "" });
   const [loading, setLoading] = useState(true);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,7 +46,6 @@ const TestTypesPage = () => {
   };
 
   const handleErrorClose = () => {
-    // Дія для очищення помилки в Redux
     dispatch({ type: "CLEAR_ERROR" });
   };
 
@@ -120,7 +122,11 @@ const TestTypesPage = () => {
                   >
                     Видалити
                   </Button>
-                  <Button size="sm" variant="info">
+                  <Button
+                    size="sm"
+                    variant="info"
+                    onClick={() => navigate(`/medical-tests/${type._id}`)}
+                  >
                     Детальніше
                   </Button>
                 </td>
